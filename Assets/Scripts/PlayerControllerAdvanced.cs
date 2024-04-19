@@ -95,7 +95,7 @@ public class PlayerControllerAdvanced : MonoBehaviour
     void FlipSprite(float horizontalInput)
     {
         Vector3 scale = transform.localScale;
-        scale.x = (horizontalInput > 0) ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+        scale.x = (horizontalInput > 0) ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
         transform.localScale = scale;
     }
 
