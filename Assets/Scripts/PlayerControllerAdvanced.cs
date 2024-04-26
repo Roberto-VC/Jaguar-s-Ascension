@@ -10,6 +10,7 @@ public class PlayerControllerAdvanced : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private bool isGrounded;
+    private bool isJumping;
 
     // New Jump variables
     public int maxJumps = 2; // How many jumps are allowed
@@ -52,6 +53,10 @@ public class PlayerControllerAdvanced : MonoBehaviour
             {
                 jumpsLeft = maxJumps;
                 isGrounded = false;
+                animator.SetBool("IsJumping", true);
+
+
+
             }
 
             if (jumpsLeft > 0)
@@ -59,12 +64,28 @@ public class PlayerControllerAdvanced : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, 0);
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 animator.SetBool("isJumping", true);
+                animator.SetBool("isFalling", true);
+                animator.SetBool("isGrounded", false);
                 jumpsLeft--;
             }
+
+        }
+        float moveVertical = rb.velocity.y;
+        if (!isGrounded && moveVertical <= 0)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isFalling", true);
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (isGrounded && moveVertical == 0)
         {
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isGrounded", true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+
             animator.SetBool("isAttacking", true);
             StartCoroutine(stopAttackAnimation());
             Attack();
