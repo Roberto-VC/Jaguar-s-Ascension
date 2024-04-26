@@ -1,30 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHealth = 100;
-    public int currentHealth;
-
-    // Add UI reference if you have a health bar
-    public TMPro.TextMeshProUGUI scoreText;
+    public int maxHealth = 5;
+    private int currentHealth;
+    public Image[] healthImages;
+    public Sprite fullHealth;
+    public Sprite emptyHealth;
 
     void Start()
     {
         currentHealth = maxHealth;
+        UpdateHealthUI();
     }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-
-        // Update UI if you have a health bar
-        scoreText.text = "Health: " + currentHealth;
+        UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
             Die();
+        }
+    }
+
+    void UpdateHealthUI()
+    {
+        for (int i = 0; i < healthImages.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                healthImages[i].sprite = fullHealth;
+            }
+            else
+            {
+                healthImages[i].sprite = emptyHealth;
+            }
         }
     }
 
@@ -33,10 +48,11 @@ public class PlayerHealth : MonoBehaviour
         // Handle player death logic here 
         // (e.g., reload scene, game over, etc.)
         Debug.Log("Player Died!");
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
-        #else
-                Application.Quit();
-        #endif
+#else
+        Application.Quit();
+#endif
     }
 }
+
