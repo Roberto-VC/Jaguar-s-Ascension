@@ -8,6 +8,13 @@ public class Patroller : Enemy
     public float speed = 3f;
     private int currentWaypointIndex = 0;
 
+
+    private void Start()
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = scale.x * -1;
+        transform.localScale = scale;
+    }
     private void Update()
     {
         if (waypoints.Length > 0)
@@ -20,11 +27,11 @@ public class Patroller : Enemy
             Vector3 scale = transform.localScale;
             if (transform.position.x < targetPosition.x) // Target is to the right
             {
-                scale.x = Mathf.Abs(scale.x); // Ensure scale.x is positive
+                scale.x = -Mathf.Abs(scale.x); // Ensure scale.x is positive
             }
             else if (transform.position.x > targetPosition.x) // Target is to the left
             {
-                scale.x = -Mathf.Abs(scale.x); // Ensure scale.x is negative
+                scale.x = Mathf.Abs(scale.x); // Ensure scale.x is negative
             }
             transform.localScale = scale;
 
@@ -35,4 +42,13 @@ public class Patroller : Enemy
             }
         }
     }
+
+    void FlipSprite(float horizontalInput)
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = (horizontalInput > 0) ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        transform.localScale = scale;
+    }
+
+
 }

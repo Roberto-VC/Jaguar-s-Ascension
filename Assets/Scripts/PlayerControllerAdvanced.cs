@@ -22,6 +22,11 @@ public class PlayerControllerAdvanced : MonoBehaviour
 
     public float resetPositionZValue = -10f;
     private Vector3 initialPosition;
+    public AudioClip jumpSound;
+    public AudioClip attackSound;
+    public AudioClip walkingSound;
+    private AudioSource audioSource;
+
 
 
     private void Start()
@@ -30,6 +35,11 @@ public class PlayerControllerAdvanced : MonoBehaviour
         animator = GetComponent<Animator>();
         jumpsLeft = maxJumps; // New
         initialPosition = transform.position;
+        audioSource = GetComponent<AudioSource>();
+        if (walkingSound != null)
+        {
+            audioSource.clip = walkingSound;
+        }
     }
 
     private void Update()
@@ -41,19 +51,26 @@ public class PlayerControllerAdvanced : MonoBehaviour
         {
             animator.SetBool("isWalking", true);
             FlipSprite(moveHorizontal);
+            if (!audioSource.isPlaying && walkingSound != null)
+            {
+                audioSource.Play();
+            }
         }
         else
         {
             animator.SetBool("isWalking", false);
+            audioSource.Stop();
         }
 
         if (Input.GetButtonDown("Jump"))
         {
+
+
             if (isGrounded)
             {
                 jumpsLeft = maxJumps;
                 isGrounded = false;
-                animator.SetBool("IsJumping", true);
+                animator.SetBool("isJumping", true);
 
 
 
@@ -67,6 +84,10 @@ public class PlayerControllerAdvanced : MonoBehaviour
                 animator.SetBool("isFalling", true);
                 animator.SetBool("isGrounded", false);
                 jumpsLeft--;
+                if (jumpSound != null)
+                {
+                    audioSource.PlayOneShot(jumpSound);
+                }
             }
 
         }
@@ -125,5 +146,9 @@ public class PlayerControllerAdvanced : MonoBehaviour
         GameObject weapon = Instantiate(weaponPrefab, attackSpawnPoint.position, Quaternion.identity);
         weapon.transform.SetParent(this.transform);
         Destroy(weapon, 0.2f);
+        if (jumpSound != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
     }
 }
